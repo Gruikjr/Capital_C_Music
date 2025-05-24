@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<script type="text/javascript">
+    document.getElementById('recherche').addEventListener('keyup', function(e) {
+      var recherche = this.value.toLowerCase();
+      var documents = document.querySelectorAll('.document');
+      
+      Array.prototype.forEach.call(documents, function(document) {
+        // On a bien trouvé les termes de recherche.
+        if (document.innerHTML.toLowerCase().indexOf(recherche) > -1) {
+          document.style.display = 'block';
+        } else {
+          document.style.display = 'none';
+        }
+      });
+    });
+</script>
+
+<div id="contenu_repertoire">
+    <form id="auto-suggest" action="#" method="post">
+        <fieldset>
+            <input type="text" id="recherche" placeholder="Search / Rechercher" />
+        </fieldset>
+    </form>
+    <BR/>
+    <?php
+    $contenu_repertoire = listDir($repertoire_courant);
+     
+    if(isset($contenu_repertoire) && !empty($contenu_repertoire) ){
+     
+        foreach($contenu_repertoire as $element) {
+         
+            switch($element['type']) {
+             
+                case 'repertoire': ?>
+                    <div class="element1 repertoire document" id="element_<?php echo rawurlencode($repertoire_courant."/".$element['nom']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?php echo $element['nom.extension'] ?>" class="document">
+                        <div class="element1_1"><img alt="repertoire" src="themes/original/images/48/repertoire.png" /></div>            
+                        <div class="element1_2"><span> <?php echo normalizeString($element['nom']) ?></span></div>                               
+                        <div class="element1_3"><span>Dossier de fichiers</span></div>
+                        <div class="element1_4">&nbsp;</div>
+                    </div>
+                    <?php break;
+                     
+                case 'fichier':
+                    if( in_array(strtolower($element['extension']), $t_extensions_reconnues) ) { ?>                                 
+                            <div class="element1 fichier document" id="element_<?php echo rawurlencode($repertoire_courant."/".$element['nom.extension']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?php echo $element['nom.extension'] ?>" class="document">                                                   
+                                <div class="element1_1"><img alt="fichier" src="themes/original/images/48/<?php echo strtolower($element['extension']) ?>.png" /></div>            
+                                <div class="element1_2"><span><?php echo shortenString(normalizeString($element['nom.extension']), 35) ?></span></div>
+                                <br/>
+                                <div class="element1_3"><span><?php echo $t_extensions[strtolower($element['extension'])]?></span> <span><?php echo formatSize($element['taille'])?></div>                                       
+                            </div>
+                    <?php }
+                    break;
+                     
+                case 'image': ?>
+                    <div class="element1 image document" id="element_<?php echo rawurlencode($repertoire_courant."/".$element['nom.extension']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?php echo $element['nom.extension'] ?>" class="document">                             
+                        <div class="element1_1"><img alt="image" src="themes/original/images/48/<?php echo strtolower($element['extension']) ?>.png" /></div>              
+                        <div class="element1_2"><span><?php echo shortenString(normalizeString($element['nom.extension']), 35) ?></span></div>                       
+                        <div class="element1_3"><span><?php echo $t_extensions[strtolower($element['extension'])]?></span></div> 
+                        <div class="element1_4"><span><?php echo formatSize($element['taille'])?></span></div>                                       
+                    </div>                               
+                    <?php break;        
+            }      
+        }      
+    }
+    else { ?>
+     
+        <img id="info" alt="[i]" src="themes/original/images/info.png" /> Répertoire vide
+         
+    <?php } ?>
+
+    <form id="auto-suggest" action="#" method="post">
+        <fieldset>
+        <input type="text" class="search" name="search" value="Search / Rechercher..." onfocus="if(this.value=='Search / Rechercher...')this.value=''" onblur="if(this.value=='')this.value='Search / Rechercher...'" autocomplete="off"/>
+        </fieldset>
+    </form>
+    <script type="text/javascript">
+        $().ready(function() {
+            $("#auto-suggest").autocomplete({
+                source: "userList.php",
+                minLength: 2,
+                select: function(event, ui) {
+                    $('#').val(ui.item.id);
+                    $('#').val(ui.item.name);
+                    window.location.href = 'index.php?id=' + ui.item.id;
+                }
+            })
+        });
+    </script>
+    <div id="documents">
+        <div class="document">Je suis un document</div>
+        <div class="document">Moi aussi</div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+      br><div id="contenu_repertoire">
+        <form id="auto-suggest" action="#" method="post">
+            <fieldset>
+                <input type="text" class="search" name="search" value="Search / Rechercher..." onfocus="if(this.value=='Search / Rechercher...')this.value=''" onblur="if(this.value=='')this.value='Search / Rechercher...'" autocomplete="off"/>
+            </fieldset>
+        </form>
+        <BR/>
+        <?php
+        $contenu_repertoire = listDir($repertoire_courant);
+         
+        if(isset($contenu_repertoire) && !empty($contenu_repertoire) ){
+         
+            foreach($contenu_repertoire as $element) {
+             
+                switch($element['type']) {
+                 
+                    case 'repertoire': ?>
+                        <div class="element1 repertoire" id="element_<?php echo rawurlencode($repertoire_courant."/".$element['nom']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?php echo $element['nom.extension'] ?>">
+                            <div class="element1_1"><img alt="repertoire" src="themes/original/images/48/repertoire.png" /></div>            
+                            <div class="element1_2"><span> <?php echo normalizeString($element['nom']) ?></span></div>                               
+                            <div class="element1_3"><span>Dossier de fichiers</span></div>
+                            <div class="element1_4">&nbsp;</div>
+                        </div>
+                        <?php break;
+                         
+                    case 'fichier':
+                        if( in_array(strtolower($element['extension']), $t_extensions_reconnues) ) { ?>                                 
+                                <div class="element1 fichier" id="element_<?php echo rawurlencode($repertoire_courant."/".$element['nom.extension']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?php echo $element['nom.extension'] ?>">                                                 
+                                    <div class="element1_1"><img alt="fichier" src="themes/original/images/48/<?php echo strtolower($element['extension']) ?>.png" /></div>            
+                                    <div class="element1_2"><span><?php echo shortenString(normalizeString($element['nom.extension']), 35) ?></span></div>
+                                    <br/>
+                                    <div class="element1_3"><span><?php echo $t_extensions[strtolower($element['extension'])]?></span> <span><?php echo formatSize($element['taille'])?></div>                                       
+                                </div>
+                        <?php }
+                        break;
+                         
+                    case 'image': ?>
+                        <div class="element1 image" id="element_<?php echo rawurlencode($repertoire_courant."/".$element['nom.extension']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?php echo $element['nom.extension'] ?>">                               
+                            <div class="element1_1"><img alt="image" src="themes/original/images/48/<?php echo strtolower($element['extension']) ?>.png" /></div>              
+                            <div class="element1_2"><span><?php echo shortenString(normalizeString($element['nom.extension']), 35) ?></span></div>                       
+                            <div class="element1_3"><span><?php echo $t_extensions[strtolower($element['extension'])]?></span></div> 
+                            <div class="element1_4"><span><?php echo formatSize($element['taille'])?></span></div>                                       
+                        </div>                               
+                        <?php break;        
+                }      
+            }      
+        }
+        else { ?>
+         
+            <img id="info" alt="[i]" src="themes/original/images/info.png" /> Répertoire vide
+             
+        <?php } ?>
+</div><!-- fin contenu_repertoire -->
+</div><!-- fin contenu_repertoire -->
+
+case 'image': ?>
+    <div class="element1 image document" id="element_<?php echo rawurlencode($repertoire_courant."/".$element['nom.extension']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?php echo $element['nom.extension'] ?>">                              
+        <div class="element1_1"><img alt="image" src="themes/original/images/48/<?php echo strtolower($element['extension']) ?>.png" /></div>             
+        <div class="element1_2"><span><?php echo shortenString(normalizeString($element['nom.extension']), 35) ?></span></div>                      
+        <div class="element1_3"><span><?php echo $t_extensions[strtolower($element['extension'])]?></span></div>
+        <div class="element1_4"><span><?php echo formatSize($element['taille'])?></span></div>                                      
+    </div>                              
+    <?php break;
+
+    <script type="text/javascript">
+        document.getElementById('recherche').addEventListener('keyup', function(e) {
+          var recherche = this.value.toLowerCase();
+          var documents = document.querySelectorAll('.document');
+          
+          Array.prototype.forEach.call(documents, function(document) {
+            // On a bien trouvé les termes de recherche.
+            if (document.innerHTML.toLowerCase().indexOf(recherche) > -1) {
+              document.style.display = 'block';
+            } else {
+              document.style.display = 'none';
+            }
+          });
+        });
+    </script>
+
+
+
+
+<div id="contenu_repertoire">
+    <form id="auto-suggest" action="#" method="post">
+        <fieldset>
+            <input type="text" class="search" name="search" id="recherche" value="Search / Rechercher..." onfocus="if(this.value=='Search / Rechercher...')this.value=''" onblur="if(this.value=='')this.value='Search / Rechercher...'" autocomplete="off"/>
+        </fieldset>
+    </form>
+    <BR/>
+    <?php
+    $contenu_repertoire = listDir($repertoire_courant);
+     
+    if(isset($contenu_repertoire) && !empty($contenu_repertoire) ){
+     
+        foreach($contenu_repertoire as $element) {
+         
+            switch($element['type']) {
+             
+                case 'repertoire': ?>
+                    <div class="element1 repertoire" id="element_<?php echo rawurlencode($repertoire_courant."/".$element['nom']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?php echo $element['nom.extension'] ?>">
+                        <div class="element1_1" class="document"><img alt="repertoire" src="themes/original/images/48/repertoire.png" /></div>               
+                        <div class="element1_2" class="document"><span> <?php echo normalizeString($element['nom']) ?></span></div>                              
+                        <div class="element1_3" class="document"><span>Dossier de fichiers</span></div>
+                        <div class="element1_4" class="document">&nbsp;</div>
+                    </div>
+                    <?php break;
+                     
+                case 'fichier':
+                    if( in_array(strtolower($element['extension']), $t_extensions_reconnues) ) { ?>                                 
+                            <div class="element1 fichier" id="element_<?php echo rawurlencode($repertoire_courant."/".$element['nom.extension']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?php echo $element['nom.extension'] ?>" class="document">                                                
+                                <div class="element1_1" class="document"><img alt="fichier" src="themes/original/images/48/<?php echo strtolower($element['extension']) ?>.png" /></div>               
+                                <div class="element1_2" class="document"><span><?php echo shortenString(normalizeString($element['nom.extension']), 35) ?></span></div>
+                                <br/>
+                                <div class="element1_3" class="document"><span><?php echo $t_extensions[strtolower($element['extension'])]?></span> <span><?php echo formatSize($element['taille'])?></div>                                      
+                            </div>
+                    <?php }
+                    break;
+                     
+                case 'image': ?>
+                    <div class="element1 image" id="element_<?php echo rawurlencode($repertoire_courant."/".$element['nom.extension']), "&amp;orderby=nom&amp;order=", $order ?>" title="<?php echo $element['nom.extension'] ?>">                               
+                        <div class="element1_1" class="document"><img alt="image" src="themes/original/images/48/<?php echo strtolower($element['extension']) ?>.png" /></div>             
+                        <div class="element1_2" class="document"><span><?php echo shortenString(normalizeString($element['nom.extension']), 35) ?></span></div>                      
+                        <div class="element1_3" class="document"><span><?php echo $t_extensions[strtolower($element['extension'])]?></span></div>
+                        <div class="element1_4" class="document"><span><?php echo formatSize($element['taille'])?></span></div>                                      
+                    </div>                               
+                    <?php break;        
+            }      
+        }      
+    }
+    else { ?>
+     
+        <img id="info" alt="[i]" src="themes/original/images/info.png" /> Répertoire vide
+         
+    <?php } ?>
+</div><!-- fin contenu_repertoire -->
+
+<!--à mettre dans BODY!!!!! -->
+ <!-- ... -->
+ <script>
+    document.getElementById('recherche').addEventListener('keyup', function(e) {
+      var recherche = this.value.toLowerCase();
+      var documents = document.querySelectorAll('.document');
+       
+      Array.prototype.forEach.call(documents, function(document) {
+        // On a bien trouvé les termes de recherche.
+        if (document.innerHTML.toLowerCase().indexOf(recherche) > -1) {
+          document.style.display = 'block';
+        } else {
+          document.style.display = 'none';
+        }
+      });
+    });
+</script>
+</body>
+
+
+
+
+
+
+</html>
